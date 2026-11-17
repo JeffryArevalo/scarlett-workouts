@@ -153,8 +153,8 @@ button:focus-visible, a:focus-visible {
   color: var(--accent);
 }
 .day-btn.rest .abbr { color: var(--muted); }
-.day-btn .title { font-weight: 600; font-size: 18px; line-height: 1.2; }
-.day-btn .sub { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.day-btn .title { display: block; font-weight: 600; font-size: 18px; line-height: 1.2; }
+.day-btn .sub { display: block; font-size: 14px; color: var(--muted); margin-top: 2px; }
 .day-btn .chev { width: 22px; height: 22px; color: var(--muted); }
 .today-pill {
   display: inline-block;
@@ -208,8 +208,8 @@ button:focus-visible, a:focus-visible {
   color: var(--muted);
 }
 .ex-btn .num::before { content: counter(ex); }
-.ex-btn .name { font-weight: 600; font-size: 18px; line-height: 1.2; }
-.ex-btn .sets { font-size: 15px; color: var(--muted); margin-top: 2px; }
+.ex-btn .name { display: block; font-weight: 600; font-size: 18px; line-height: 1.2; }
+.ex-btn .sets { display: block; font-size: 15px; color: var(--muted); margin-top: 2px; }
 .ex-btn .sets strong { color: var(--text); font-weight: 600; }
 .ex-btn .chev { width: 22px; height: 22px; color: var(--muted); }
 .tag {
