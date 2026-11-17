@@ -1,5 +1,5 @@
 // Offline support: network first, fall back to the cached copy (works in the gym with weak signal).
-const CACHE = "scarlett-workouts-v1";
+const CACHE = "scarlett-workouts-v2";
 const CORE = ["./", "./index.html", "./styles.css", "./app.js", "./data.js", "./manifest.json", "./icon-180.png"];
 
 self.addEventListener("install", (e) => {
