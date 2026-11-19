@@ -277,6 +277,72 @@ button:focus-visible, a:focus-visible {
 .nav-row button.primary:hover, .nav-row button.primary:active { background: var(--accent-strong); }
 .nav-row button:disabled { opacity: 0.4; cursor: default; }
 
+/* Weight tracker */
+.ex-btn .lb { color: var(--accent); font-weight: 600; }
+.weight-card {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.weight-label {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.weight-row { display: grid; grid-template-columns: 56px 1fr 56px; gap: 10px; margin-top: 10px; align-items: center; }
+.step {
+  height: 56px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+  transition: background-color 200ms;
+}
+.step:active { background: #4b5563; }
+.weight-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 56px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  transition: border-color 200ms;
+}
+.weight-field:focus-within { border-color: var(--accent); }
+.weight-field input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: 54px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-family: "Barlow Condensed", "Barlow", sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: right;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.weight-field input::-webkit-outer-spin-button,
+.weight-field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.weight-field input::placeholder { color: #4b5563; }
+.weight-field span { flex: none; color: var(--muted); font-size: 16px; white-space: nowrap; }
+.weight-meta { margin: 8px 2px 0; font-size: 15px; color: var(--muted); min-height: 1.5em; }
+.weight-meta .up { color: var(--green); font-weight: 600; }
+.weight-meta .down { color: var(--muted); font-weight: 600; }
+
 .footer-note { margin-top: 32px; font-size: 14px; color: var(--muted); text-align: center; }
 
 .view { animation: fade 200ms ease-out; }

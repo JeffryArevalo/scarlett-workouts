@@ -2,6 +2,8 @@
 (function () {
   const app = document.getElementById("app");
   const PHASE_KEY = "scarlett-phase";
+  const WEIGHTS_KEY = "scarlett-weights";
+  let current = null; // { day, ex } while an exercise screen is open
 
   const ICON_CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
   const ICON_BACK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
@@ -33,6 +35,70 @@
   }
 
   function go(hash) { location.hash = hash; }
+
+  /* ---------- Saved weights (kept on this phone only) ---------- */
+
+  function isoToday() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function niceDate(iso) {
+    const [y, m, d] = iso.split("-").map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  }
+  function fmt(n) { return String(Math.round(n * 10) / 10); }
+
+  // Two dumbbells = weight per hand. One-arm row and hip thrust use a single weight.
+  function unitFor(ex) {
+    return /dumbbell/i.test(ex.name) && !/one-arm|hip thrust/i.test(ex.name) ? "lb each" : "lb";
+  }
+
+  function loadWeights() {
+    try { return JSON.parse(localStorage.getItem(WEIGHTS_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function saveWeights(all) {
+    try { localStorage.setItem(WEIGHTS_KEY, JSON.stringify(all)); return true; } catch (e) { return false; }
+  }
+  // Keyed by day + name, so Tuesday's and Friday's pushdowns are tracked separately.
+  function weightKey(day, ex) { return day.id + ":" + ex.name; }
+  function getWeight(day, ex) { return loadWeights()[weightKey(day, ex)] || null; }
+
+  function setWeight(day, ex, value) {
+    const all = loadWeights();
+    const key = weightKey(day, ex);
+    const cur = all[key];
+    if (cur && cur.w === value) return true;
+    const today = isoToday();
+    // Edits on the same day just correct today's number. On a new day, the old number becomes "prev".
+    const prev = cur ? (cur.date === today ? cur.prev : cur.w) : null;
+    all[key] = { w: value, date: today, prev: prev };
+    return saveWeights(all);
+  }
+
+  function weightMeta(entry) {
+    if (!entry) return "Type the weight you lift. It's saved for next time.";
+    let s = entry.date === isoToday() ? "Saved today" : "Last time: " + esc(niceDate(entry.date));
+    if (entry.prev != null && entry.w !== entry.prev) {
+      const up = entry.w > entry.prev;
+      s += ` · <span class="${up ? "up" : "down"}">${up ? "up" : "down"} from ${fmt(entry.prev)} lb</span>`;
+    }
+    return s;
+  }
+
+  function onWeightInput(raw) {
+    if (!current) return;
+    const text = String(raw).trim();
+    if (text === "") return; // clearing the box to retype never erases the saved weight
+    const v = parseFloat(text);
+    if (!isFinite(v) || v < 0) return;
+    const ok = setWeight(current.day, current.ex, Math.round(v * 10) / 10);
+    const meta = document.getElementById("w-meta");
+    if (meta) {
+      meta.innerHTML = ok
+        ? weightMeta(getWeight(current.day, current.ex))
+        : "Couldn't save on this phone. Make sure private browsing is off.";
+    }
+  }
 
   /* ---------- Views ---------- */
 
@@ -70,6 +136,7 @@
 
   function dayView(day) {
     const phase = getPhase();
+    const weights = loadWeights();
     const top = `
       <div class="topbar">
         <button class="back" data-go="#/">${ICON_BACK}Week</button>
@@ -93,12 +160,14 @@
 
     const list = day.exercises.map((ex, i) => {
       const sr = setsReps(ex, phase);
+      const saved = ex.bw ? null : weights[weightKey(day, ex)];
+      const lb = saved ? `${fmt(saved.w)} ${unitFor(ex)}` : "";
       return `
-        <button class="ex-btn" data-go="#/${day.id}/${i}" aria-label="${esc(ex.name)}, ${sr.sets} sets of ${esc(sr.reps)}">
+        <button class="ex-btn" data-go="#/${day.id}/${i}" aria-label="${esc(ex.name)}, ${sr.sets} sets of ${esc(sr.reps)}${lb ? ", last weight " + esc(lb) : ""}">
           <span class="num" aria-hidden="true"></span>
           <span>
             <span class="name">${esc(ex.name)}${ex.main ? '<span class="tag">Main</span>' : ""}${ex.superset ? '<span class="tag">Superset</span>' : ""}</span>
-            <span class="sets"><strong>${sr.sets} × ${esc(sr.reps)}</strong>${sr.rest ? " · rest " + esc(sr.rest) : ""}</span>
+            <span class="sets"><strong>${sr.sets} × ${esc(sr.reps)}</strong>${sr.rest ? " · rest " + esc(sr.rest) : ""}${lb ? ` · <span class="lb">${esc(lb)}</span>` : ""}</span>
           </span>
           ${ICON_CHEV}
         </button>`;
@@ -120,6 +189,24 @@
         <div class="section-title">Exercises</div>
         <div class="exercises">${list}</div>
       </section>`;
+  }
+
+  function weightCard(day, ex) {
+    if (ex.bw) return "";
+    const entry = getWeight(day, ex);
+    return `
+      <div class="weight-card">
+        <label class="weight-label" for="w-input">Weight</label>
+        <div class="weight-row">
+          <button type="button" class="step" data-step="-5" aria-label="5 pounds less">&minus;</button>
+          <div class="weight-field">
+            <input id="w-input" type="number" inputmode="decimal" min="0" step="any" placeholder="0" autocomplete="off" value="${entry ? fmt(entry.w) : ""}">
+            <span>${unitFor(ex)}</span>
+          </div>
+          <button type="button" class="step" data-step="5" aria-label="5 pounds more">+</button>
+        </div>
+        <p class="weight-meta" id="w-meta" aria-live="polite">${weightMeta(entry)}</p>
+      </div>`;
   }
 
   function exerciseView(day, idx) {
@@ -149,6 +236,7 @@
           <div class="stat"><div class="label">Reps</div><div class="value">${esc(sr.reps)}</div></div>
           <div class="stat"><div class="label">Rest</div><div class="value">${sr.rest ? esc(sr.rest.replace(" sec", "s")) : "60s"}</div></div>
         </div>
+        ${weightCard(day, ex)}
         <div class="section-title">How to do it</div>
         <ol class="cues">${ex.cues.map((c) => `<li>${esc(c)}</li>`).join("")}</ol>
         <div class="nav-row">
@@ -164,9 +252,11 @@
     const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
     const day = DAYS.find((d) => d.id === parts[0]);
     let html;
+    current = null;
     if (!day) {
       html = homeView();
     } else if (parts[1] !== undefined && day.exercises[Number(parts[1])]) {
+      current = { day: day, ex: day.exercises[Number(parts[1])] };
       html = exerciseView(day, Number(parts[1]));
     } else {
       html = dayView(day);
@@ -179,7 +269,20 @@
     const goBtn = e.target.closest("[data-go]");
     if (goBtn) { go(goBtn.getAttribute("data-go")); return; }
     const phaseBtn = e.target.closest("[data-phase]");
-    if (phaseBtn) setPhase(phaseBtn.getAttribute("data-phase"));
+    if (phaseBtn) { setPhase(phaseBtn.getAttribute("data-phase")); return; }
+    const stepBtn = e.target.closest("[data-step]");
+    if (stepBtn) {
+      const input = document.getElementById("w-input");
+      if (!input) return;
+      const base = parseFloat(input.value) || 0;
+      const next = Math.max(0, base + Number(stepBtn.getAttribute("data-step")));
+      input.value = fmt(next);
+      onWeightInput(input.value);
+    }
+  });
+
+  app.addEventListener("input", (e) => {
+    if (e.target.id === "w-input") onWeightInput(e.target.value);
   });
 
   window.addEventListener("hashchange", render);
