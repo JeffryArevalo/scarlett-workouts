@@ -1,6 +1,6 @@
 // Scarlett's 12-week plan (Planet Fitness). Edit this file to change the workouts.
 // img: file in images/ (a missing file shows the "No photo yet" box). main: true = uses the phase sets/reps.
-// goal + levels: a skill exercise for a goal. The level she picks on the home screen decides which version shows.
+// levels: a skill exercise (pull-up / handstand) with 3 versions, one per phase: Foundation, Build, Strength.
 // assist: true = the weight box tracks machine help (less help = stronger). bw: true = no weight box.
 
 const PHASES = [
@@ -9,34 +9,12 @@ const PHASES = [
   { id: "strength",   label: "Weeks 9–12", name: "Strength",  sets: 4, reps: "8–10",  rest: "90 sec", effort: "Last rep is a real fight, form clean." },
 ];
 
-// Skill goals. Levels do not follow the 12-week phases: move up only when you pass the test.
-const GOALS = [
-  {
-    id: "pullup", name: "Pull-up", target: "One strict pull-up: from straight arms to chin over the bar.",
-    days: "Wed (main) and Fri (light)",
-    levels: [
-      { short: "Hang",      moveUp: "3 × 30 sec dead hang and 3 × 10 scapular pull-ups, both clean." },
-      { short: "Negatives", moveUp: "3 × 3 negatives that take a full 5 seconds each, and a 15-sec chin-over-bar hold." },
-      { short: "Close in",  moveUp: "Ready to test when slow negatives take 8–10 sec and assisted pull-ups need about 20 lb of help or less. Try one real pull-up at the start of Wednesday every 2 weeks." },
-    ],
-  },
-  {
-    id: "handstand", name: "Handstand", target: "A freestanding handstand held for 5 seconds.",
-    days: "Mon and Thu (practice), Tue (strength)",
-    levels: [
-      { short: "Pike", moveUp: "3 × 30 sec pike hold on the bench and 3 × 8 pike push-ups." },
-      { short: "Wall", moveUp: "3 × 30 sec chest-to-wall handstand with a straight body, and you can come down safely on purpose." },
-      { short: "Free", moveUp: "Goal reached at a 5-sec freestanding hold. Keep practicing to stretch it to 15–30 sec." },
-    ],
-  },
-];
-
 const WARMUP_RUN = "Run ends at the gym. Drink water, rest 5 min, then one light set of the first exercise.";
 const WARMUP_LIFT = "5 min bike or incline walk, 10 bodyweight squats, 10 glute bridges, 8 walking lunges per leg, then one light set.";
 const WRIST_PREP = "Wrist warm-up before handstand work: on hands and knees, rock forward and back 10 times, then 10 times with fingers pointing back toward the knees.";
 
 const PIKE_PUSH = {
-  name: "Pike push-up", goal: "handstand", bw: true,
+  name: "Pike push-up", bw: true,
   levels: [
     { name: "Pike push-up", sets: 3, reps: "6–8", img: "pike-push-up.jpg",
       cues: ["Hips high in an upside-down V, hands shoulder-width", "Bend the elbows and lower the top of your head toward the floor just in front of the hands", "Press back up. Elbows point back, not out to the sides"] },
@@ -48,11 +26,11 @@ const PIKE_PUSH = {
 };
 
 const HANDSTAND_PRACTICE = {
-  name: "Handstand practice", goal: "handstand", bw: true, rest: "60–90 sec",
+  name: "Handstand practice", bw: true, rest: "60–90 sec",
   levels: [
     { name: "Pike hold on a bench", sets: 3, reps: "20–30 sec", img: "pike-hold.jpg",
       cues: ["Feet on a bench, hands on the floor shoulder-width", "Walk the hands in until the hips are over the shoulders", "Push the floor away, arms straight, ears between the arms", "Hold and breathe, then walk out"] },
-    { name: "Chest-to-wall handstand", sets: 3, reps: "15–30 sec", img: "wall-handstand.jpg",
+    { name: "Chest-to-wall handstand", sets: 3, reps: "15–30 sec", img: "wall-handstand.jpg", imgNote: "The photo shows her back to the wall. Face the wall instead: it keeps your body straighter.",
       cues: ["Practice coming down first: walk the hands out, or turn to one side and step down", "From a push-up with feet on the wall, walk the feet up and hands in until the chest is near the wall", "Push tall through the shoulders, ribs in, glutes and legs squeezed", "Look at the floor between the hands"] },
     { name: "Toe pulls & kick-ups", sets: 5, reps: "5–10 sec off the wall", img: "handstand-kickup.jpg",
       cues: ["Walk up to a chest-to-wall handstand", "Press into the fingers and peel the toes off the wall, balance as long as you can", "Then 3–5 kick-ups in open space. Cartwheel out to come down", "Goal: 5 seconds freestanding"] },
@@ -99,7 +77,7 @@ const DAYS = [
     id: "wed", short: "Wed", name: "Wednesday", title: "Upper pull + pull-up", run: "3–6 mi, ends at the gym", warmup: WARMUP_RUN,
     note: "Pull-up work first while your arms are fresh. Use the assisted pull-up machine's top handles as the bar.",
     exercises: [
-      { name: "Pull-up practice", goal: "pullup", bw: true, rest: "60–90 sec",
+      { name: "Pull-up practice", bw: true, rest: "60–90 sec",
         levels: [
           { name: "Scapular pull-up", sets: 3, reps: "8–10", img: "scapular-pull-up.jpg",
             cues: ["Hang from the bar, hands just wider than shoulders, arms straight", "Pull the shoulder blades down and back so your body rises 2–3 inches. Elbows stay straight", "Hold 2 seconds, then lower slowly to a full hang"] },
@@ -142,7 +120,7 @@ const DAYS = [
   {
     id: "fri", short: "Fri", name: "Friday", title: "Shoulders, arms & hang (light)", run: "3–6 mi, ends at the gym", warmup: WARMUP_RUN,
     exercises: [
-      { name: "Hang practice", goal: "pullup", bw: true, rest: "60–90 sec",
+      { name: "Hang practice", bw: true, rest: "60–90 sec",
         levels: [
           { name: "Dead hang", sets: 3, reps: "20–30 sec", img: "dead-hang.jpg",
             cues: ["Full grip on the bar, thumbs wrapped around, hands just wider than shoulders", "Arms straight, shoulders gently pulled down away from the ears", "Breathe and hold. Step down before the grip gives out"] },
