@@ -3,6 +3,7 @@
   const app = document.getElementById("app");
   const PHASE_KEY = "scarlett-phase";
   const WEIGHTS_KEY = "scarlett-weights";
+  const LEVELS_KEY = "scarlett-levels";
   let current = null; // { day, ex } while an exercise screen is open
 
   const ICON_CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
@@ -25,13 +26,36 @@
     render();
   }
 
+  /* ---------- Goal levels (pull-up, handstand) ---------- */
+
+  function loadLevels() {
+    try { return JSON.parse(localStorage.getItem(LEVELS_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function getLevel(goalId) {
+    const n = Number(loadLevels()[goalId]) || 0;
+    return Math.min(Math.max(n, 0), 2);
+  }
+  function setLevel(goalId, n) {
+    const all = loadLevels();
+    all[goalId] = n;
+    try { localStorage.setItem(LEVELS_KEY, JSON.stringify(all)); } catch (e) { /* ignore */ }
+    render();
+  }
+  function goalById(id) { return GOALS.find((g) => g.id === id); }
+
+  // A goal exercise shows the version for the level she picked on the home screen.
+  function resolve(ex) {
+    if (!ex.levels) return ex;
+    return Object.assign({}, ex, ex.levels[getLevel(ex.goal)], { levels: undefined });
+  }
+
   function todayId() {
     return ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date().getDay()];
   }
 
   function setsReps(ex, phase) {
     if (ex.main) return { sets: phase.sets, reps: phase.reps, rest: phase.rest };
-    return { sets: ex.sets, reps: ex.reps, rest: null };
+    return { sets: ex.sets, reps: ex.reps, rest: ex.rest || null };
   }
 
   function go(hash) { location.hash = hash; }
@@ -49,7 +73,9 @@
   function fmt(n) { return String(Math.round(n * 10) / 10); }
 
   // Two dumbbells = weight per hand. One-arm row and hip thrust use a single weight.
+  // Assisted machines: the number is how much help she gets, so going down is progress.
   function unitFor(ex) {
+    if (ex.assist) return "lb help";
     return /dumbbell/i.test(ex.name) && !/one-arm|hip thrust/i.test(ex.name) ? "lb each" : "lb";
   }
 
@@ -75,12 +101,19 @@
     return saveWeights(all);
   }
 
-  function weightMeta(entry) {
-    if (!entry) return "Type the weight you lift. It's saved for next time.";
+  function weightMeta(entry, ex) {
+    const assist = ex && ex.assist;
+    if (!entry) {
+      return assist
+        ? "Type the help weight you set on the machine. Less help = stronger."
+        : "Type the weight you lift. It's saved for next time.";
+    }
     let s = entry.date === isoToday() ? "Saved today" : "Last time: " + esc(niceDate(entry.date));
     if (entry.prev != null && entry.w !== entry.prev) {
       const up = entry.w > entry.prev;
-      s += ` · <span class="${up ? "up" : "down"}">${up ? "up" : "down"} from ${fmt(entry.prev)} lb</span>`;
+      const better = assist ? !up : up;
+      const words = assist ? (up ? "more help than" : "less help than") : (up ? "up from" : "down from");
+      s += ` · <span class="${better ? "up" : "down"}">${words} ${fmt(entry.prev)} lb</span>`;
     }
     return s;
   }
@@ -95,7 +128,7 @@
     const meta = document.getElementById("w-meta");
     if (meta) {
       meta.innerHTML = ok
-        ? weightMeta(getWeight(current.day, current.ex))
+        ? weightMeta(getWeight(current.day, current.ex), current.ex)
         : "Couldn't save on this phone. Make sure private browsing is off.";
     }
   }
@@ -128,10 +161,28 @@
         <div class="section-title">Current phase</div>
         <div class="segmented" role="group" aria-label="Training phase">${segs}</div>
         <p class="phase-note">Main lifts: ${phase.sets} × ${esc(phase.reps)}, rest ${esc(phase.rest)}. ${esc(phase.effort)}</p>
+        <div class="section-title">Skill goals</div>
+        ${GOALS.map(goalCard).join("")}
         <div class="section-title">This week</div>
         <div class="days">${dayButtons}</div>
         <p class="footer-note">Week 13: lighter week (half the sets), then start a new block.</p>
       </section>`;
+  }
+
+  function goalCard(goal) {
+    const lvl = getLevel(goal.id);
+    const segs = goal.levels.map((l, i) => `
+      <button type="button" data-goal="${goal.id}" data-level="${i}" aria-pressed="${i === lvl}">Level ${i + 1}<span>${esc(l.short)}</span></button>`).join("");
+    return `
+      <div class="goal-card">
+        <div class="goal-head">
+          <h2>${esc(goal.name)}</h2>
+          <span class="goal-days">${esc(goal.days)}</span>
+        </div>
+        <p class="goal-target">${esc(goal.target)}</p>
+        <div class="segmented" role="group" aria-label="${esc(goal.name)} level">${segs}</div>
+        <p class="goal-move"><strong>${lvl === goal.levels.length - 1 ? "Goal:" : "Move up when:"}</strong> ${esc(goal.levels[lvl].moveUp)}</p>
+      </div>`;
   }
 
   function dayView(day) {
@@ -158,15 +209,17 @@
         </section>`;
     }
 
-    const list = day.exercises.map((ex, i) => {
+    const list = day.exercises.map((raw, i) => {
+      const ex = resolve(raw);
       const sr = setsReps(ex, phase);
+      const goalTag = ex.goal ? `<span class="tag goal">${esc(goalById(ex.goal).name)} L${getLevel(ex.goal) + 1}</span>` : "";
       const saved = ex.bw ? null : weights[weightKey(day, ex)];
       const lb = saved ? `${fmt(saved.w)} ${unitFor(ex)}` : "";
       return `
         <button class="ex-btn" data-go="#/${day.id}/${i}" aria-label="${esc(ex.name)}, ${sr.sets} sets of ${esc(sr.reps)}${lb ? ", last weight " + esc(lb) : ""}">
           <span class="num" aria-hidden="true"></span>
           <span>
-            <span class="name">${esc(ex.name)}${ex.main ? '<span class="tag">Main</span>' : ""}${ex.superset ? '<span class="tag">Superset</span>' : ""}</span>
+            <span class="name">${esc(ex.name)}${ex.main ? '<span class="tag">Main</span>' : ""}${ex.superset ? '<span class="tag">Superset</span>' : ""}${goalTag}</span>
             <span class="sets"><strong>${sr.sets} × ${esc(sr.reps)}</strong>${sr.rest ? " · rest " + esc(sr.rest) : ""}${lb ? ` · <span class="lb">${esc(lb)}</span>` : ""}</span>
           </span>
           ${ICON_CHEV}
@@ -196,7 +249,7 @@
     const entry = getWeight(day, ex);
     return `
       <div class="weight-card">
-        <label class="weight-label" for="w-input">Weight</label>
+        <label class="weight-label" for="w-input">${ex.assist ? "Machine help" : "Weight"}</label>
         <div class="weight-row">
           <button type="button" class="step" data-step="-5" aria-label="5 pounds less">&minus;</button>
           <div class="weight-field">
@@ -205,14 +258,24 @@
           </div>
           <button type="button" class="step" data-step="5" aria-label="5 pounds more">+</button>
         </div>
-        <p class="weight-meta" id="w-meta" aria-live="polite">${weightMeta(entry)}</p>
+        <p class="weight-meta" id="w-meta" aria-live="polite">${weightMeta(entry, ex)}</p>
       </div>`;
   }
 
   function exerciseView(day, idx) {
     const phase = getPhase();
-    const ex = day.exercises[idx];
+    const ex = resolve(day.exercises[idx]);
     const sr = setsReps(ex, phase);
+    let goalBox = "";
+    if (ex.goal) {
+      const g = goalById(ex.goal);
+      const lvl = getLevel(ex.goal);
+      goalBox = `
+        <div class="card goal-note">
+          <h3>${esc(g.name)} goal · Level ${lvl + 1} of ${g.levels.length}</h3>
+          <p><strong>${lvl === g.levels.length - 1 ? "Goal:" : "Move up when:"}</strong> ${esc(g.levels[lvl].moveUp)} Change the level on the home screen.</p>
+        </div>`;
+    }
     const prev = idx > 0 ? `#/${day.id}/${idx - 1}` : null;
     const next = idx < day.exercises.length - 1 ? `#/${day.id}/${idx + 1}` : null;
 
@@ -237,6 +300,7 @@
           <div class="stat"><div class="label">Rest</div><div class="value">${sr.rest ? esc(sr.rest.replace(" sec", "s")) : "60s"}</div></div>
         </div>
         ${weightCard(day, ex)}
+        ${goalBox}
         <div class="section-title">How to do it</div>
         <ol class="cues">${ex.cues.map((c) => `<li>${esc(c)}</li>`).join("")}</ol>
         <div class="nav-row">
@@ -256,7 +320,7 @@
     if (!day) {
       html = homeView();
     } else if (parts[1] !== undefined && day.exercises[Number(parts[1])]) {
-      current = { day: day, ex: day.exercises[Number(parts[1])] };
+      current = { day: day, ex: resolve(day.exercises[Number(parts[1])]) };
       html = exerciseView(day, Number(parts[1]));
     } else {
       html = dayView(day);
@@ -270,6 +334,8 @@
     if (goBtn) { go(goBtn.getAttribute("data-go")); return; }
     const phaseBtn = e.target.closest("[data-phase]");
     if (phaseBtn) { setPhase(phaseBtn.getAttribute("data-phase")); return; }
+    const levelBtn = e.target.closest("[data-level]");
+    if (levelBtn) { setLevel(levelBtn.getAttribute("data-goal"), Number(levelBtn.getAttribute("data-level"))); return; }
     const stepBtn = e.target.closest("[data-step]");
     if (stepBtn) {
       const input = document.getElementById("w-input");
@@ -284,6 +350,15 @@
   app.addEventListener("input", (e) => {
     if (e.target.id === "w-input") onWeightInput(e.target.value);
   });
+
+  // Photo not added yet: show the "No photo yet" box instead of a broken image.
+  app.addEventListener("error", (e) => {
+    const img = e.target;
+    if (!(img instanceof HTMLImageElement) || !img.closest(".figure")) return;
+    const fig = img.closest(".figure");
+    fig.classList.add("empty");
+    fig.innerHTML = ICON_DUMBBELL + "<span>No photo yet. Follow the cues below.</span>";
+  }, true);
 
   window.addEventListener("hashchange", render);
   render();

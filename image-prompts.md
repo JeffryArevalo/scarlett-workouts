@@ -98,3 +98,44 @@ Photorealistic gym photo, front view. A fit athletic woman in her 30s, hair in a
 
 **woodchop.jpg**
 Photorealistic gym photo, front three-quarter view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, doing a cable woodchop: standing side-on to a cable machine set high, feet wide, both hands gripping a single handle, pulling it diagonally across her body down toward the opposite hip with arms straight, torso rotated. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+## Skill goals: pull-up and handstand (added 2026-11-20)
+
+**scapular-pull-up.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, hanging from the top handles of an assisted pull-up machine (knee pad folded away) with arms completely straight, shoulder blades pulled down so her body is lifted slightly, shoulders away from her ears, feet off the platform. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**pull-up-negative.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, halfway through lowering from a pull-up on a pull-up bar: elbows bent at 90 degrees, body straight, feet off the floor, a flat bench below her that she stepped up from. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**assisted-pull-up.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, using an assisted pull-up machine: knees resting on the padded platform, hands gripping the overhead handles just wider than shoulders, palms facing away, chin just above the handles at the top of the rep. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**dead-hang.jpg**
+Photorealistic gym photo, front view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, hanging from a pull-up bar with arms fully straight, full overhand grip with thumbs wrapped around, hands just wider than shoulders, body relaxed and straight, feet off the floor. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**flexed-arm-hang.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, holding herself at the top of a pull-up on a pull-up bar: chin above the bar, elbows tucked tight to her sides, palms facing away, legs straight together, feet off the floor. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**hanging-knee-raise.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, on a captain's chair (vertical knee raise station): back against the pad, forearms on the arm rests, knees raised up to hip height with legs bent at 90 degrees, feet off the floor. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**pike-hold.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, holding a pike handstand with her feet on a flat bench and her hands on a floor mat, hips stacked directly over her shoulders, arms straight, ears between her arms, body forming an upside-down L shape. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**wall-handstand.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, holding a chest-to-wall handstand against a plain wall in an open stretching area: hands on a mat a hand-width from the wall, arms straight, body in one straight line, chest and toes lightly touching the wall, looking at the floor between her hands. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**handstand-kickup.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, in a freestanding handstand on a mat in an open stretching area, a short distance from a wall: arms straight, body in one straight line, legs together, toes pointed, perfectly balanced. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**pike-push-up.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, doing a pike push-up on a mat at the bottom of the rep: hips high in an upside-down V, hands shoulder-width, elbows bent and pointing back, top of her head close to the floor just in front of her hands. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**elevated-pike-push-up.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, doing an elevated pike push-up: feet on a flat bench, hands on a floor mat, hips stacked over her shoulders, elbows bent, top of her head lowered toward the floor in front of her hands. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**wall-walk.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, halfway through a wall walk against a plain wall: hands on a mat, feet partway up the wall, body at a 45-degree angle in a straight line from hands to feet, arms straight. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.
+
+**hollow-hold.jpg**
+Photorealistic gym photo, side view. A fit athletic woman in her 30s, hair in a ponytail, black sports bra and dark grey leggings, in a bright modern commercial gym, holding a hollow body hold on an exercise mat: lower back pressed into the mat, arms stretched overhead, shoulders and legs lifted a few inches off the floor, legs straight and together, body in a shallow banana shape. Sharp focus, even lighting, 4:3 landscape, no text, no watermark.

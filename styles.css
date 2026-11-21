@@ -128,6 +128,23 @@ button:focus-visible, a:focus-visible {
 .segmented button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); }
 .phase-note { margin: 8px 2px 0; font-size: 15px; color: var(--muted); }
 
+/* Skill goals */
+.goal-card {
+  padding: 14px 14px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  margin-bottom: 10px;
+}
+.goal-card .segmented { background: var(--bg); }
+.goal-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.goal-head h2 { font-size: 26px; }
+.goal-days { font-size: 13px; color: var(--muted); }
+.goal-target { margin: 2px 0 10px; font-size: 15px; color: var(--muted); }
+.goal-move { margin: 10px 2px 0; font-size: 15px; color: var(--muted); }
+.goal-move strong, .goal-note strong { color: var(--text); font-weight: 600; }
+.tag.goal { border-color: var(--green); color: var(--green); }
+
 /* Day buttons */
 .days { display: grid; gap: 10px; }
 .day-btn {
